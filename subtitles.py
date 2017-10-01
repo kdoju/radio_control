@@ -9,18 +9,28 @@ server = xmlrpclib.Server(url)
 token = server.LogIn('', '', 'en', 'OSTestUserAgentTemp')['token']
 
 
-def get_subtitles(title, path, language):
+def get_subtitles(title, path, language, sub_no):
     moviehash = get_hash.hashFile(path)
     resp = server.SearchSubtitles(token, [{'sublanguageid':language, 'moviehash':moviehash}])
     if resp['status'] == '200 OK':
         count = len(resp['data'])
         if count > 0:
-            subtitle_id = resp['data'][0]['IDSubtitleFile']
-            resp = server.DownloadSubtitles(token, [int(subtitle_id)])
-            if resp['status'] == '200 OK':
-                message = download(resp, path)
+            if sub_no < count:
+                print resp['data'][sub_no]['SubFileName']
+                subtitle_id = resp['data'][sub_no]['IDSubtitleFile']
+                resp = server.DownloadSubtitles(token, [int(subtitle_id)])
+                if resp['status'] == '200 OK':
+                    match_type = 'exact'
+                    message = save_subs(resp, path, count, match_type)
+                else:
+                    message = resp['status']
+                    print resp['status']
+            else:
+                message = 'Subtitle number out of range'
+                print 'Subtitle number out of range'
         else:
             print "No subtitles found for file. Trying to find subtitles for title."
+            match_type = 'title'
             ia = IMDb(accessSystem='http')
             if re.findall('(S[0-9]{1,2}E[0-9]{1,2})', title):
                 season = int(re.findall('(S[0-9]{1,2})', title)[0][2:])
@@ -37,19 +47,27 @@ def get_subtitles(title, path, language):
                         if resp['status'] == '200 OK':
                             count = len(resp['data'])
                             if count > 0:
-                                for data in resp['data']:
-                                    if data['SubFileName'][-4:] == '.srt':
-                                        print data['SubFileName']
-                                        subtitle_id = resp['data'][0]['IDSubtitleFile']
+                                if sub_no < count:
+                                    if resp['data'][sub_no]['SubFileName'][-4:] == '.srt':
+                                        print resp['data'][sub_no]['SubFileName']
+                                        subtitle_id = resp['data'][sub_no]['IDSubtitleFile']
                                         resp = server.DownloadSubtitles(token, [int(subtitle_id)])
                                         if resp['status'] == '200 OK':
-                                            message = download(resp, path)
-                                        break
+                                            message = save_subs(resp, path, count, match_type)
+                                        else:
+                                            message = resp['status']
+                                            print resp['status']
                                     else:
-                                        message = 'No subtitles in srt format found.'
+                                        message = 'Subtitles not in .srt format.'
+                                else:
+                                    message = 'Subtitle number out of range'
+                                    print 'Subtitle number out of range'
                             else:
-                                message =  "No subtitles found for title."
-                                print "No subtitles found for title."
+                                message =  "No subtitles found for movie title."
+                                print "No subtitles found for movie title."
+                        else:
+                            message = resp['status']
+                            print resp['status']
                     else:
                         ia.update(results[0], 'episodes')
                         episodeid = results[0]['episodes'][season][episode].movieID
@@ -58,22 +76,49 @@ def get_subtitles(title, path, language):
                         if resp['status'] == '200 OK':
                             count = len(resp['data'])
                             if count > 0:
-                                subtitle_id = resp['data'][0]['IDSubtitleFile']
-                                resp = server.DownloadSubtitles(token, [int(subtitle_id)])
-                                if resp['status'] == '200 OK':
-                                    message = download(resp, path)
+                                if sub_no < count:
+                                    print resp['data'][sub_no]['SubFileName']
+                                    subtitle_id = resp['data'][sub_no]['IDSubtitleFile']
+                                    resp = server.DownloadSubtitles(token, [int(subtitle_id)])
+                                    if resp['status'] == '200 OK':
+                                        message = save_subs(resp, path, count, match_type)
+                                    else:
+                                        message = resp['status']
+                                        print resp['status']
+                                else:
+                                    message = 'Subtitle number out of range'
+                                    print 'Subtitle number out of range'
+                            else:
+                                message =  "No subtitles found for tv series title."
+                                print "No subtitles found for tv series title."
+                        else:
+                            message = resp['status']
+                            print resp['status']
+                else:
+                    message = resp['status']
+                    print resp['status']
             else:
-                message =  "Couldn't find imdbid for title: " + title
-                print "Couldn't find imdbid for title: " + title
+                message =  "Movie " + title + " not found in database."
+                print "Movie " + title + " not found in database."
+    else:
+        message = resp['status']
+        print resp['status']
+    
     return message
 
-def download(resp, path):
+def save_subs(resp, path, count, match_type):
     compressed_data = resp['data'][0]['data'].decode('base64')
     sub_text = gzip.GzipFile(fileobj=io.BytesIO(compressed_data)).read()
     path = path.replace('\ ',' ').replace('\(','(').replace('\)',')')
     with open(path[:-4] + '.srt', 'w') as file:
         file.write(sub_text)
-    print "Subtitles downloaded successfully!"
-    message =  "Subtitles downloaded successfully!"
+    print "Subtitles downloaded using " + match_type + " search type (" + str(count) + " available)."
+    message =  "Subtitles downloaded using " + match_type + " search type (" + str(count) + " available)."
     return message
+
+    # except Exception:
+    #     print "Error occured during subtitles save."
+    #     message =  "Error occured during subtitles save."
+        
+
     

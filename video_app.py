@@ -44,6 +44,7 @@ class MyForm(FlaskForm):
     volume = SelectField(label="Volume", choices=zip([str(x) for x in range(1,16)], range(1,16)), default=default_volume)
     titles = SelectField(label="Title", choices=titles_zip)
     language = SelectField(label="Subs", choices=[('eng','EN'),('pol','PL')])
+    sub_no = SelectField(label="Sub.No.", choices=zip([str(x) for x in range(10)], range(1,11)))
     play = SubmitField(label="Play")
     pause = SubmitField(label="Pause")
     stop = SubmitField(label="Stop")
@@ -77,11 +78,13 @@ def index():
             path = form.titles.data
             title = dict(titles_zip).get(form.titles.data).replace('[Pi] ','')
             language = form.language.data
-            message = subs.get_subtitles(title, path, language)
+            sub_no = int(form.sub_no.data)
+            message = subs.get_subtitles(title, path, language, sub_no)
 
             os.system("omxplayer " + path + " --vol -1500 < files/cmd &")
             os.system("echo . > files/cmd")
-            flash(message + "\r\n  Now playing " + title)
+            flash(message)
+            flash("Now playing " + title)
         
         elif form.pause.data:
             os.system("echo -n p > files/cmd")
