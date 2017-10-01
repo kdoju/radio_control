@@ -81,7 +81,7 @@ def index():
             sub_no = int(form.sub_no.data)
             message = subs.get_subtitles(title, path, language, sub_no)
 
-            os.system("omxplayer " + path + " --vol -1500 < files/cmd &")
+            os.system("omxplayer " + path + " --vol 0 < files/cmd &")
             os.system("echo . > files/cmd")
             flash(message)
             flash("Now playing " + title)

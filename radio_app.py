@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, url_for
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import SubmitField, SelectField
-import os, config
+import os
 
 stations =  [('http://pr320.pinguinradio.com', 'PINGUIN RADIO'),
             ('http://po192.pinguinradio.com', 'PINGUIN ON THE ROCKS'),
