@@ -1,0 +1,75 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Radio Player{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle"
+            data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+            <a class="navbar-brand" href="/">Radio Player</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="http://192.168.0.14:5001">Video Player</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% block page_content %}
+{% if title %}
+<p class="h3" style="margin-left:10px"><a href="https://www.google.pl/search?q={{ title }}" target="_blank">{{ title }}</a></p>
+{% else %}
+<p class="h3"><i>Collecting title...</i></p>
+{% endif %}
+</br>
+
+<!-- {{ wtf.quick_form(form, form_type="horizontal", horizontal_columns=('lg', 1, 2)) }} -->
+
+<form method="post" class="form form-horizontal">
+    {{ form.hidden_tag() }}
+    {{ wtf.form_errors(form, hiddens="only") }}
+    <div style="width: 30px; margin-left:30px; float:left">
+        {{ wtf.form_field(form.volume) }}
+    </div>
+    <div style="width: 200px; margin-left:30px; float:left">
+        {{ wtf.form_field(form.station) }}
+    </div>
+    <div style="width: 300px; margin-left:15px">
+        {{ wtf.form_field(form.play) }}
+        {{ wtf.form_field(form.pause) }}
+        {{ wtf.form_field(form.stop) }}
+    </div>
+    </br>
+    <div style="width: 300px; margin-left:15px">
+        {{ wtf.form_field(form.vol_up) }}
+        {{ wtf.form_field(form.vol_down) }}
+    </div>
+    <div style="width: 50px; margin-left:30px">
+        {{ wtf.form_field(form.timeout) }}
+    </div>
+</form>
+
+<!-- <div class="embed-responsive embed-responsive-16by9">
+    <iframe class="embed-responsive-item" style="width:420" src="//www.youtube.com/embed/bvmEYgFsgyg"></iframe>
+</div> -->
+
+{% for message in get_flashed_messages() %}
+    <div class="alert alert-success" style="width: 300px; margin:15px">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{% endblock %}
+{% endblock %}

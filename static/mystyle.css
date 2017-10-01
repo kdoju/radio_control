@@ -1,0 +1,149 @@
+body {
+    background-color: #7BC8C3;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    color: #173251;
+        margin-left: 0px;
+}
+
+h2 {
+    color: #173251;
+        margin-left: 0px;
+}
+
+.button {
+    background-color: #4CAF50; /* Green */
+    border: 1px solid green;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    width: 270px;
+    margin: 2px;
+    border-radius: 8px;
+}
+
+.button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+  
+.button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+  
+.button:hover span {
+    padding-right: 25px;
+}
+  
+.button:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+.button_2 {
+    background-color: #2486B0;
+    border: 1px solid #104359;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    width: 132px;
+    margin: 2px;
+    border-radius: 8px;
+}
+
+.button_2 span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+  
+.button_2 span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+  
+.button_2:hover span {
+    padding-right: 25px;
+}
+  
+.button_2:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.link_button {
+    background-color: #B23D32; /* Green */
+    border: 1px solid #701710;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    width: 100px;
+    margin: 2px;
+    border-radius: 8px;
+}
+
+.button_movie {
+    background-color: #4CAF50; /* Green */
+    border: 1px solid green;
+    color: white;
+    padding: 3px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    /* width: 500px; */
+    margin: 1px;
+    border-radius: 8px;
+}
+
+.button_movie span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+  
+.button_movie span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+  
+.button_movie span {
+    padding-right: 25px;
+}
+  
+.button_movie span:after {
+    opacity: 1;
+    right: 0;
+}
