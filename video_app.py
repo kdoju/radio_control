@@ -36,12 +36,7 @@ def get_titles():
 
 titles_zip = get_titles()
 
-default_volume = 5
-min_volume_lvl = 1
-max_volume_lvl = 15
-
 class MyForm(FlaskForm):
-    volume = SelectField(label="Volume", choices=zip([str(x) for x in range(1,16)], range(1,16)), default=default_volume)
     titles = SelectField(label="Title", choices=titles_zip)
     language = SelectField(label="Subs", choices=[('eng','EN'),('pol','PL')])
     sub_no = SelectField(label="Sub.No.", choices=zip([str(x) for x in range(10)], range(1,11)))
@@ -95,20 +90,12 @@ def index():
             flash("Player stopped")
         
         elif form.vol_up.data:
-            if not int(form.volume.data) == max_volume_lvl:
-                os.system("echo -n + > files/cmd")
-                form.volume.data = str(int(form.volume.data) + 1)
-                flash("Volume increased")
-            else:
-                flash("Volume max level")
+            os.system("echo -n + > files/cmd")
+            flash("Volume increased")
         
         elif form.vol_down.data:
-            if not int(form.volume.data) == min_volume_lvl:
-                os.system("echo -n - > files/cmd")
-                form.volume.data = str(int(form.volume.data) - 1)
-                flash("Volume decreased")
-            else:
-                flash("Volume min level")
+            os.system("echo -n - > files/cmd")
+            flash("Volume decreased")
         
         elif form.backward.data:
             os.system("echo -n ^[[D > files/cmd")
