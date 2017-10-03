@@ -4,12 +4,13 @@ import xmlrpclib, io, gzip, re, os
 import get_hash
 from imdb import IMDb
 
-url = 'https://api.opensubtitles.org/xml-rpc'
-server = xmlrpclib.Server(url)
-token = server.LogIn('', '', 'en', 'OSTestUserAgentTemp')['token']
-
 
 def get_subtitles(title, path, language, sub_no):
+
+    url = 'https://api.opensubtitles.org/xml-rpc'
+    server = xmlrpclib.Server(url)
+    token = server.LogIn('', '', 'en', 'OSTestUserAgentTemp')['token']
+
     moviehash = get_hash.hashFile(path)
     resp = server.SearchSubtitles(token, [{'sublanguageid':language, 'moviehash':moviehash}])
     if resp['status'] == '200 OK':

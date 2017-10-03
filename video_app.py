@@ -40,6 +40,7 @@ class MyForm(FlaskForm):
     titles = SelectField(label="Title", choices=titles_zip)
     language = SelectField(label="Subs", choices=[('eng','EN'),('pol','PL')])
     sub_no = SelectField(label="Sub.No.", choices=zip([str(x) for x in range(10)], range(1,11)))
+    sub_size = SelectField(label="Size", choices=zip([str(x) for x in range(40,80,5)], range(40,80,5)), default=60)
     play = SubmitField(label="Play")
     pause = SubmitField(label="Pause")
     stop = SubmitField(label="Stop")
@@ -49,6 +50,12 @@ class MyForm(FlaskForm):
     backward = SubmitField(label="-30s")
     forward_2 = SubmitField(label="+10m")
     backward_2 = SubmitField(label="-10m")
+    info = SubmitField(label="Info")
+    prev_chapter = SubmitField(label="Previous")
+    next_chapter = SubmitField(label="Next")
+    toggle_subs = SubmitField(label="Toggle subtitles")
+    sub_delay_minus = SubmitField(label="- 250 ms")
+    sub_delay_plus = SubmitField(label="+ 250 ms")
 
 application = Flask(__name__)
 bootstrap = Bootstrap(application)
@@ -74,9 +81,10 @@ def index():
             title = dict(titles_zip).get(form.titles.data).replace('[Pi] ','')
             language = form.language.data
             sub_no = int(form.sub_no.data)
+            sub_size = form.sub_size.data
             message = subs.get_subtitles(title, path, language, sub_no)
 
-            os.system("omxplayer " + path + " --vol 0 < files/cmd &")
+            os.system("omxplayer " + path + " --vol 0 --font-size " + sub_size + " < files/cmd &")
             os.system("echo . > files/cmd")
             flash(message)
             flash("Now playing " + title)
@@ -112,6 +120,30 @@ def index():
         elif form.forward_2.data:
             os.system("echo -n ^[[A > files/cmd")
             flash("Forward 10 minutes")
+
+        elif form.info.data:
+            os.system("echo -n z > files/cmd")
+            flash("Showing movie info")
+
+        elif form.prev_chapter.data:
+            os.system("echo -n i > files/cmd")
+            flash("Previous chapter")
+
+        elif form.next_chapter.data:
+            os.system("echo -n o > files/cmd")
+            flash("Next chapter")
+
+        elif form.toggle_subs.data:
+            os.system("echo -n s > files/cmd")
+            flash("Toggle subtitles")
+
+        elif form.sub_delay_minus.data:
+            os.system("echo -n d > files/cmd")
+            flash("Decrease subtitle delay (- 250 ms)")
+
+        elif form.sub_delay_plus.data:
+            os.system("echo -n f > files/cmd")
+            flash("Increase subtitle delay (+ 250 ms)")
 
     if form.errors:
         for error_field, error_message in form.errors.iteritems():

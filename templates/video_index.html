@@ -30,34 +30,53 @@
 {% block page_content %}
 
 <form method="post" class="form form-horizontal">
-    {{ form.hidden_tag() }}
-    {{ wtf.form_errors(form, hiddens="only") }}
-    <div style="width: 200px; margin-left:30px; float:left">
-        {{ wtf.form_field(form.titles) }}
-    </div>
-    <div style="width: 40px; margin-left:30px; float:left">
-            {{ wtf.form_field(form.language) }}
-    </div>
-    <div style="width: 30px; margin-left:30px; float:left">
-        {{ wtf.form_field(form.sub_no) }}
+{{ form.hidden_tag() }}
+{{ wtf.form_errors(form, hiddens="only") }}
+<div style="width: 200px; margin-left:30px">
+    {{ wtf.form_field(form.titles) }}
 </div>
+
+<div style="width: 60px; margin-left:30px; float:left">
+    {{ wtf.form_field(form.language) }}
+</div>
+<div style="width: 60px; margin-left:30px; float:left">
+    {{ wtf.form_field(form.sub_no) }}
+</div>
+<div style="width: 60px; margin-left:30px; float:left">
+    {{ wtf.form_field(form.sub_size) }}
+</div>
+</br>
 <div style="width: 300px; margin-left:15px">
-        {{ wtf.form_field(form.play) }}
-        {{ wtf.form_field(form.pause) }}
-        {{ wtf.form_field(form.stop) }}
-    </div>
-    </br>
-    <div style="width: 300px; margin-left:15px">
-        {{ wtf.form_field(form.vol_up) }}
-        {{ wtf.form_field(form.vol_down) }}
-    </div>
-    </br>
-    <div style="width: 300px; margin-left:15px">
-        {{ wtf.form_field(form.backward_2) }}
-        {{ wtf.form_field(form.backward) }}
-        {{ wtf.form_field(form.forward) }}
-        {{ wtf.form_field(form.forward_2) }}
-    </div>
+    {{ wtf.form_field(form.play) }}
+    {{ wtf.form_field(form.pause) }}
+    {{ wtf.form_field(form.stop) }}
+    {{ wtf.form_field(form.info) }}
+</div>
+</br>
+<div style="width: 300px; margin-left:15px">
+    {{ wtf.form_field(form.vol_up) }}
+    {{ wtf.form_field(form.vol_down) }}
+</div>
+</br>
+<div style="width: 300px; margin-left:15px">
+    {{ wtf.form_field(form.backward_2) }}
+    {{ wtf.form_field(form.backward) }}
+    {{ wtf.form_field(form.forward) }}
+    {{ wtf.form_field(form.forward_2) }}
+</div>
+</br>
+<div style="width: 300px; margin-left:15px">
+    {{ wtf.form_field(form.prev_chapter) }}
+    {{ wtf.form_field(form.next_chapter) }}
+    Search chapter
+</div>
+</br>
+<div style="width: 300px; margin-left:15px">
+    {{ wtf.form_field(form.sub_delay_minus) }}
+    {{ wtf.form_field(form.sub_delay_plus) }}
+    {{ wtf.form_field(form.toggle_subs) }}
+    Subtitle delay
+</div>
 </form>
 
 <!-- <div class="embed-responsive embed-responsive-16by9">
