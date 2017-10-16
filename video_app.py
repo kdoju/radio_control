@@ -38,8 +38,9 @@ titles_zip = get_titles()
 
 class MyForm(FlaskForm):
     titles = SelectField(label="Title", choices=titles_zip)
-    language = SelectField(label="Subs", choices=[('eng','EN'),('pol','PL')])
-    sub_no = SelectField(label="Sub.No.", choices=zip([str(x) for x in range(10)], range(1,11)))
+    sub_switch = SelectField(label="Subs", choices=[('1','ON'),('0','OFF')])
+    language = SelectField(label="Lang", choices=[('eng','EN'),('pol','PL')])
+    sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(10)], range(1,11)))
     sub_size = SelectField(label="Size", choices=zip([str(x) for x in range(40,80,5)], range(40,80,5)), default=60)
     play = SubmitField(label="Play")
     pause = SubmitField(label="Pause")
@@ -82,11 +83,14 @@ def index():
             language = form.language.data
             sub_no = int(form.sub_no.data)
             sub_size = form.sub_size.data
-            message = subs.get_subtitles(title, path, language, sub_no)
+            sub_switch = bool(int(form.sub_switch.data))
+            print sub_switch, type(sub_switch)
+            if sub_switch:
+                message = subs.get_subtitles(title, path, language, sub_no)
+                flash(message)
 
             os.system("omxplayer " + path + " --vol 0 --font-size " + sub_size + " < files/cmd &")
             os.system("echo . > files/cmd")
-            flash(message)
             flash("Now playing " + title)
         
         elif form.pause.data:

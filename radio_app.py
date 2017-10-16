@@ -50,8 +50,6 @@ def index():
 
     station_url = get_current_station()
     station_name = dict(stations).get(station_url)
-    os.system("echo " + station_name.lower())
-    os.system("echo " + saved_station.lower())
     if station_name.lower() != saved_station.lower():
         saved_title = ''
                 
