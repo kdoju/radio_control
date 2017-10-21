@@ -26,7 +26,7 @@ def get_titles():
         titles[i]['fpath'] = fpaths[i]
 
     titles_zip = zip([title['fpath'] for title in titles],
-                    [(title['title'] if '/mnt/HP_Vids' in title['fpath'] else '[Pi] ' + title['title']).replace('\ ',' ') \
+                    [(title['title'] if '/mnt/HP_Vids' in title['fpath'] else '[Pi] ' + title['title']).replace('\ ',' ').replace('\\','') \
                     + (' S' + (str(0) + str(title['season']) if title['season'] < 10 else str(title['season'])) if 'season' in title else '') \
                     + ('E' + (str(0) + str(title['episode']) if title['episode'] < 10 else str(title['episode'])) if 'episode' in title else '') \
                     for title in titles])
@@ -38,7 +38,7 @@ titles_zip = get_titles()
 
 class MyForm(FlaskForm):
     titles = SelectField(label="Title", choices=titles_zip)
-    sub_switch = SelectField(label="Subs", choices=[('1','ON'),('0','OFF')])
+    sub_switch = SelectField(label="Download", choices=[('1','YES'),('0','NO')])
     language = SelectField(label="Lang", choices=[('eng','EN'),('pol','PL')])
     sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(10)], range(1,11)))
     sub_size = SelectField(label="Size", choices=zip([str(x) for x in range(40,80,5)], range(40,80,5)), default=60)
@@ -52,9 +52,9 @@ class MyForm(FlaskForm):
     forward_2 = SubmitField(label="+10m")
     backward_2 = SubmitField(label="-10m")
     info = SubmitField(label="Info")
-    prev_chapter = SubmitField(label="Previous")
-    next_chapter = SubmitField(label="Next")
-    toggle_subs = SubmitField(label="Toggle subtitles")
+    prev_chapter = SubmitField(label="Prev ch")
+    next_chapter = SubmitField(label="Next ch")
+    toggle_subs = SubmitField(label="Toggle subs")
     sub_delay_minus = SubmitField(label="- 250 ms")
     sub_delay_plus = SubmitField(label="+ 250 ms")
 
@@ -86,6 +86,7 @@ def index():
             sub_switch = bool(int(form.sub_switch.data))
             print sub_switch, type(sub_switch)
             if sub_switch:
+                flash("Downloading subtitles")
                 message = subs.get_subtitles(title, path, language, sub_no)
                 flash(message)
 
