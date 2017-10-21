@@ -43,6 +43,7 @@ class MyForm(FlaskForm):
     sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(10)], range(1,11)))
     sub_size = SelectField(label="Size", choices=zip([str(x) for x in range(40,80,5)], range(40,80,5)), default=60)
     play = SubmitField(label="Play")
+    resume = SubmitField(label="Resume")
     pause = SubmitField(label="Pause")
     stop = SubmitField(label="Stop")
     vol_up = SubmitField(label="Volume +")
@@ -51,7 +52,6 @@ class MyForm(FlaskForm):
     backward = SubmitField(label="-30s")
     forward_2 = SubmitField(label="+10m")
     backward_2 = SubmitField(label="-10m")
-    info = SubmitField(label="Info")
     prev_chapter = SubmitField(label="Prev ch")
     next_chapter = SubmitField(label="Next ch")
     toggle_subs = SubmitField(label="Toggle subs")
@@ -75,7 +75,7 @@ def index():
 
     if form.validate_on_submit():
 
-        if form.play.data:
+        if form.play.data or form.resume.data:
             os.system("pkill omxplayer")
 
             path = form.titles.data
@@ -90,7 +90,11 @@ def index():
                 message = subs.get_subtitles(title, path, language, sub_no)
                 flash(message)
 
-            os.system("omxplayer " + path + " --vol 0 --font-size " + sub_size + " < files/cmd &")
+            if form.play.data:
+                os.system("omxplayer " + path + " --vol 0 --font-size " + sub_size + " -g < files/cmd &")
+            elif form.resume.data:
+                resume_time = get_resume_time()
+                os.system("omxplayer " + path + " --vol 0 --font-size " + sub_size + " -g -l " + resume_time + " < files/cmd &")
             os.system("echo . > files/cmd")
             flash("Now playing " + title)
         
@@ -126,10 +130,6 @@ def index():
             os.system("echo -n ^[[A > files/cmd")
             flash("Forward 10 minutes")
 
-        elif form.info.data:
-            os.system("echo -n z > files/cmd")
-            flash("Showing movie info")
-
         elif form.prev_chapter.data:
             os.system("echo -n i > files/cmd")
             flash("Previous chapter")
@@ -160,3 +160,15 @@ def index():
 if __name__ == '__main__':
     application.run(host='0.0.0.0', debug=True, port=5001)
 
+def get_resume_time():
+    with open('omxplayer.log', 'r') as file:
+        for line in reversed(file.readlines()):
+            if line.find('DEBUG: Normal M:') > -1:
+                millis = line.split('DEBUG: Normal M:')[1].split('(')[0].strip()
+                print "Millis: " + millis
+                hours = int(float(millis)/(60*60*1000000))
+                minutes = int(float(millis)/(60*1000000))-hours*60
+                seconds = int(float(millis)/1000000)-minutes*60-hours*60*60-10
+                resume_time = str(hours) + ':' + str(minutes) + ':' + str(seconds)
+                print "Resume time: " + resume_time
+                return resume_time
