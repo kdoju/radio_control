@@ -40,9 +40,9 @@ def get_subtitles(title, path, language, sub_no):
             match_type = 'title'
             ia = IMDb(accessSystem='http')
             if re.findall('(S[0-9]{1,2}E[0-9]{1,2})', title):
-                season = int(re.findall('(S[0-9]{1,2})', title)[0][2:])
+                season = int(re.findall('(S[0-9]{2})', title)[0][1:])
                 print "season: " + str(season)
-                episode = int(re.findall('(E[0-9]{1,2})', title)[0][2:])
+                episode = int(re.findall('(E[0-9]{2})', title)[0][1:])
                 print "episode: " + str(episode)
             title = re.sub('( S[0-9]{1,2}E[0-9]{1,2})', '', title)
             results = ia.search_movie(title, results=1)
