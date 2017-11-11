@@ -10,7 +10,7 @@ def get_subtitles(title, path, language, sub_no):
     url = 'https://api.opensubtitles.org/xml-rpc'
     server = xmlrpclib.Server(url)
     try:
-        token = server.LogIn('', '', 'en', 'OSTestUserAgentTemp')['token']
+        token = server.LogIn('', '', 'en', 'TemporaryUserAgent')['token']
     except xmlrpclib.ProtocolError:
         message = "Error when loggin into OpenSubtitles"
         return message
