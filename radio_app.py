@@ -40,7 +40,11 @@ os.system("rm -r files/cmd")
 os.system("mkfifo files/cmd")
 os.system("chmod 777 files/cmd")
 os.system("pkill omxplayer")
-os.system("timeout " + str(default_timeout) + "m omxplayer " + station + " --vol " + str(default_volume) + " < files/cmd &")
+os.system("timeout " + str(default_timeout) + "m" + \
+            " omxplayer " + station + \
+            " --vol " + str(default_volume) + \
+            " -o hdmi " + \
+            "< files/cmd &")
 os.system("echo . > files/cmd")
 
 @application.route('/', methods=['GET','POST'])
@@ -68,7 +72,11 @@ def index():
             timeout = form.timeout.data
 
             os.system("pkill omxplayer")
-            os.system("timeout " + timeout + "m omxplayer " + station_url + " --vol " + str(volume) + " < files/cmd &")
+            os.system("timeout " + timeout + "m" + \
+                        " omxplayer " + station_url + \
+                        " --vol " + str(volume) + \
+                        " -o hdmi " + \
+                        "< files/cmd &")
             os.system("echo . > files/cmd")
             
             flash("Now playing " + station_name)
