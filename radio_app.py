@@ -44,6 +44,7 @@ os.system("timeout " + str(default_timeout) + "m" + \
             " omxplayer " + station + \
             " --vol " + str(default_volume) + \
             " -o hdmi " + \
+            " -g " + \
             "< files/cmd &")
 os.system("echo . > files/cmd")
 
@@ -76,6 +77,7 @@ def index():
                         " omxplayer " + station_url + \
                         " --vol " + str(volume) + \
                         " -o hdmi " + \
+                        " -g " + \
                         "< files/cmd &")
             os.system("echo . > files/cmd")
             
@@ -141,5 +143,5 @@ def get_volume_lvl():
         return volume
 
 if __name__ == '__main__':
-    application.run(host='0.0.0.0', debug=True)
+    application.run()
 
