@@ -7,9 +7,9 @@ cd /home/pi/flask_projects/radio_ctrl/
 
 source venv/bin/activate.fish
 
-uwsgi --socket 0.0.0.0:5001 --protocol=http -w video_wsgi &
+nohup uwsgi --socket 0.0.0.0:5001 --protocol=http -w video_wsgi &
 sleep 2
-uwsgi --socket 0.0.0.0:5000 --protocol=http -w radio_wsgi &
+nohup uwsgi --socket 0.0.0.0:5000 --protocol=http -w radio_wsgi &
 
 deactivate
 

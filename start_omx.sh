@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-set var (python test.py);
+set var (python /home/pi/flask_projects/radio_ctrl/test.py);
 if math "$var != 0"
-    restart.txt
+    /home/pi/flask_projects/radio_ctrl/restart.txt
 end

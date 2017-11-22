@@ -2,7 +2,7 @@
 
 import datetime
 
-with open('omxplayer.log') as log:
+with open('/home/pi/flask_projects/radio_ctrl/omxplayer.log') as log:
     for line in reversed(log.readlines()):
         omx_time = line.split()[0]
 #        print omx_time
