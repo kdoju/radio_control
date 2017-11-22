@@ -1,9 +1,16 @@
-#!/bin/bash
+#!/usr/bin/fish
+
+set pid (lsof -t -i :5000); kill -9 $pid
+set pid (lsof -t -i :5001); kill -9 $pid
 
 cd /home/pi/flask_projects/radio_ctrl/
-source venv/bin/activate
+
+source venv/bin/activate.fish
+
 uwsgi --socket 0.0.0.0:5001 --protocol=http -w video_wsgi &
-sleep 5
+sleep 2
 uwsgi --socket 0.0.0.0:5000 --protocol=http -w radio_wsgi &
+
 deactivate
+
 cd /home/pi
