@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, url_for
+from flask import Flask, render_template, request, flash, url_for, redirect
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import SubmitField, SelectField
@@ -10,11 +10,15 @@ def get_titles():
     cmd_2 = ['find', '/mnt/HP_Vids', '-name', '*.avi']
     cmd_3 = ['find', '/home/pi/Videos', '-name', '*.mkv']
     cmd_4 = ['find', '/home/pi/Videos', '-name', '*.avi']
+    cmd_5 = ['find', '/mnt/HP_Vids', '-name', '*.mp4']
+    cmd_6 = ['find', '/home/pi/Videos', '-name', '*.mp4']
 
     fpaths = subprocess.check_output(cmd_1, universal_newlines=True)
     fpaths = fpaths + subprocess.check_output(cmd_2, universal_newlines=True)
     fpaths = fpaths + subprocess.check_output(cmd_3, universal_newlines=True)
     fpaths = fpaths + subprocess.check_output(cmd_4, universal_newlines=True)
+    fpaths = fpaths + subprocess.check_output(cmd_5, universal_newlines=True)
+    fpaths = fpaths + subprocess.check_output(cmd_6, universal_newlines=True)
 
     fpaths = fpaths.replace(' ','\ ').replace('(', '\(').replace(')', '\)').split('\n')
     fpaths.sort()
@@ -37,6 +41,7 @@ titles_zip = get_titles()
 
 class MyForm(FlaskForm):
     titles = SelectField(label="Title", choices=titles_zip)
+    search_link = SubmitField(label="Search")
     sub_switch = SelectField(label="Download", choices=[('1','YES'),('0','NO')])
     language = SelectField(label="Lang", choices=[('eng','EN'),('pol','PL')])
     sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(10)], range(1,11)))
@@ -86,16 +91,17 @@ def index():
             sub_no = int(form.sub_no.data)
             sub_size = form.sub_size.data
             sub_switch = bool(int(form.sub_switch.data))
+            volume = get_volume_lvl()
             if sub_switch:
                 message = subs.get_subtitles(title, path, language, sub_no)
                 flash(message)
 
             if form.play.data:
-                os.system("omxplayer " + path + " --vol -900 --font-size " + sub_size + " -g < files/cmd &")
+                os.system("omxplayer " + path + " --vol " + volume + " --font-size " + sub_size + " -g -b < files/cmd &")
             elif form.resume.data:
                 resume_time = get_resume_time(title)
                 flash('Starting from: ' + resume_time)
-                os.system("omxplayer " + path + " --vol -900 --font-size " + sub_size + " -g -l " + resume_time + " < files/cmd &")
+                os.system("omxplayer " + path + " --vol " + volume + " --font-size " + sub_size + " -g -b -l " + resume_time + " < files/cmd &")
             os.system("echo . > files/cmd")
             flash("Now playing " + title)
             with open('files/video_title.txt', 'w') as file:
@@ -121,6 +127,9 @@ def index():
         
         elif form.vol_up.data:
             if read_player_state() == 'playing':
+                volume = int(get_volume_lvl())
+                new_volume = volume + 300
+                save_volume_lvl(str(new_volume))
                 os.system("echo -n + > files/cmd")
                 flash("Volume increased")
             else:
@@ -128,6 +137,9 @@ def index():
         
         elif form.vol_down.data:
             if read_player_state() == 'playing':
+                volume = int(get_volume_lvl())
+                new_volume = volume - 300
+                save_volume_lvl(str(new_volume))
                 os.system("echo -n - > files/cmd")
                 flash("Volume decreased")
             else:
@@ -196,6 +208,10 @@ def index():
             else:
                 flash('Forbidden action')
 
+        elif form.search_link.data:
+            title = dict(titles_zip).get(form.titles.data).replace('[Pi] ','')
+            return redirect("http://www.google.pl/search?q=" + title)
+
     if form.errors:
         for error_field, error_message in form.errors.iteritems():
             flash("Field : {field}; error : {error}".format(field=error_field, error=error_message))
@@ -228,4 +244,13 @@ def read_player_state():
     with open('files/video_state.txt', 'r') as file:
         state = file.read()
         return state
-    
+
+def save_volume_lvl(volume):
+    with open('/home/pi/flask_projects/radio_ctrl/files/current_volume_video.txt', 'w') as file:
+        file.write(str(volume))
+
+def get_volume_lvl():
+    with open('/home/pi/flask_projects/radio_ctrl/files/current_volume_video.txt', 'r') as file:
+        volume = file.read()
+        return volume
+

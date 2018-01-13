@@ -32,8 +32,12 @@
 <form method="post" class="form form-horizontal">
 {{ form.hidden_tag() }}
 {{ wtf.form_errors(form, hiddens="only") }}
+<div>
 <div style="width: 200px; margin-left:30px">
     {{ wtf.form_field(form.titles) }}
+</div>
+<div style="width: 200px; margin-left:15px">
+    {{ wtf.form_field(form.search_link) }}
 </div>
 <div style="width: 60px; margin-left:30px; float:left">
     {{ wtf.form_field(form.sub_switch) }}
