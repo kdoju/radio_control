@@ -55,6 +55,7 @@ def get_subtitles(title, path, language, sub_no):
                             count = len(resp['data'])
                             if count > 0:
                                 if sub_no < count:
+                                    print resp['data'][sub_no]['SubFileName']
                                     if resp['data'][sub_no]['SubFileName'][-4:] == '.srt':
                                         print resp['data'][sub_no]['SubFileName']
                                         subtitle_id = resp['data'][sub_no]['IDSubtitleFile']
