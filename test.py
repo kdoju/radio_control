@@ -16,10 +16,10 @@ curr_time = str(hour).zfill(2) + ':' + str(min).zfill(2) + ':' + str(second).zfi
 #print curr_time
 
 prs_curr_time = datetime.datetime.strptime(curr_time, '%H:%M:%S')
-#print prs_curr_time
+# print 'current time: ' + str(prs_curr_time)
 
 prs_omx_time = datetime.datetime.strptime(omx_time, '%H:%M:%S')
-#print prs_omx_time
+# print 'omx time: ' + str(prs_omx_time)
 
 if int(str(prs_curr_time - prs_omx_time).split(':')[2]) == 0 or \
  int(str(prs_curr_time - prs_omx_time).split(':')[1]) == 0:

@@ -1,7 +1,6 @@
 #!/usr/bin/fish
 
-set pid (lsof -t -i :5000); kill -9 $pid
-#set pid (lsof -t -i :5001); kill -9 $pid
+set pid (lsof -t -i :5001); kill -9 $pid
 set pid (pgrep uwsgi); kill -9 $pid
 
 cd /home/pi/flask_projects/radio_ctrl/

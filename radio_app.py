@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, flash, url_for
+from flask import Flask, render_template, request, flash, url_for, redirect
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import SubmitField, SelectField
-import os
+import os, subprocess
 
 stations =  [('http://pr320.pinguinradio.com', 'PINGUIN RADIO'),
             ('http://po192.pinguinradio.com', 'PINGUIN ON THE ROCKS'),
@@ -117,6 +117,11 @@ def index():
     form.station.data = get_current_station()
 
     return render_template('radio_index.html', title=saved_title, form=form)
+
+@application.route('/restart', methods=['GET','POST'])
+def restart():
+    subprocess.Popen([os.path.expanduser('/home/pi/flask_projects/radio_ctrl/restart_radio.txt')])
+    return redirect('/')
 
 def get_song_info():
     with open('/home/pi/flask_projects/radio_ctrl/files/omx_title.txt', 'r') as file:

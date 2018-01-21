@@ -218,6 +218,11 @@ def index():
 
     return render_template('video_index.html', title=title, form=form)
 
+@application.route('/restart', methods=['GET','POST'])
+def restart():
+    subprocess.Popen([os.path.expanduser('/home/pi/flask_projects/radio_ctrl/restart.txt')])
+    return redirect('/')
+
 
 if __name__ == '__main__':
     application.run(port=5001)
