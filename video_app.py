@@ -224,9 +224,6 @@ def restart():
     return redirect('/')
 
 
-if __name__ == '__main__':
-    application.run()
-
 def get_resume_time(title):
     with open('files/video_title.txt', 'r') as file:
         prev_title = file.readline()
@@ -258,4 +255,7 @@ def get_volume_lvl():
     with open('files/current_volume_video.txt', 'r') as file:
         volume = file.read()
         return volume
+
+if __name__ == '__main__':
+    application.run()
 
