@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import SubmitField, SelectField
 import os, subprocess, PTN
-import subtitles as subs
+from modules import subtitles as subs
 
 def get_titles():
     cmd_1 = ['find', '/mnt/HP_Vids', '-name', '*.mkv']
@@ -44,7 +44,7 @@ class MyForm(FlaskForm):
     search_link = SubmitField(label="Search")
     sub_switch = SelectField(label="Download", choices=[('1','YES'),('0','NO')])
     language = SelectField(label="Lang", choices=[('eng','EN'),('pol','PL')])
-    sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(10)], range(1,11)))
+    sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(20)], range(1,11)))
     sub_size = SelectField(label="Size", choices=zip([str(x) for x in range(40,80,5)], range(40,80,5)), default=60)
     play = SubmitField(label="Play")
     resume = SubmitField(label="Resume")
@@ -220,7 +220,7 @@ def index():
 
 @application.route('/restart', methods=['GET','POST'])
 def restart():
-    subprocess.Popen([os.path.expanduser('/home/pi/flask_projects/radio_ctrl/restart.txt')])
+    subprocess.Popen([os.path.expanduser('scripts/restart.txt')])
     return redirect('/')
 
 
@@ -251,11 +251,11 @@ def read_player_state():
         return state
 
 def save_volume_lvl(volume):
-    with open('/home/pi/flask_projects/radio_ctrl/files/current_volume_video.txt', 'w') as file:
+    with open('files/current_volume_video.txt', 'w') as file:
         file.write(str(volume))
 
 def get_volume_lvl():
-    with open('/home/pi/flask_projects/radio_ctrl/files/current_volume_video.txt', 'r') as file:
+    with open('files/current_volume_video.txt', 'r') as file:
         volume = file.read()
         return volume
 

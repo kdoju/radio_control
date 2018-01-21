@@ -29,10 +29,10 @@ application = Flask(__name__)
 bootstrap = Bootstrap(application)
 application.config['SECRET_KEY'] = 'well-secret-password'
 
-with open('/home/pi/flask_projects/radio_ctrl/files/current_station.txt', 'r') as file:
+with open('files/current_station.txt', 'r') as file:
     station = file.read().split(' : ')[1].strip()
 
-with open('/home/pi/flask_projects/radio_ctrl/files/current_volume.txt', 'w') as file:
+with open('files/current_volume.txt', 'w') as file:
     file.write(str(default_volume_lvl))
 
 
@@ -120,30 +120,30 @@ def index():
 
 @application.route('/restart', methods=['GET','POST'])
 def restart():
-    subprocess.Popen([os.path.expanduser('/home/pi/flask_projects/radio_ctrl/restart_radio.txt')])
+    subprocess.Popen([os.path.expanduser('scripts/restart_radio.txt')])
     return redirect('/')
 
 def get_song_info():
-    with open('/home/pi/flask_projects/radio_ctrl/files/omx_title.txt', 'r') as file:
+    with open('files/omx_title.txt', 'r') as file:
         title = file.readline().split('(')[0].split('[')[0]
         station = file.readline().split('(')[0].split(',')[0].strip()
         return title, station
 
 def save_current_station(station_name, station_url):
-    with open('/home/pi/flask_projects/radio_ctrl/files/current_station.txt', 'w') as file:
+    with open('files/current_station.txt', 'w') as file:
         file.write(station_name + " : " + station_url)
 
 def get_current_station():
-    with open('/home/pi/flask_projects/radio_ctrl/files/current_station.txt', 'r') as file:
+    with open('files/current_station.txt', 'r') as file:
         station_url = file.read().split(' : ')[1].strip()
         return station_url
 
 def save_volume_lvl(volume):
-    with open('/home/pi/flask_projects/radio_ctrl/files/current_volume.txt', 'w') as file:
+    with open('files/current_volume.txt', 'w') as file:
         file.write(str(volume))
 
 def get_volume_lvl():
-    with open('/home/pi/flask_projects/radio_ctrl/files/current_volume.txt', 'r') as file:
+    with open('files/current_volume.txt', 'r') as file:
         volume = file.read()
         return volume
 
