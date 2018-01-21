@@ -225,7 +225,7 @@ def restart():
 
 
 if __name__ == '__main__':
-    application.run(port=5001)
+    application.run()
 
 def get_resume_time(title):
     with open('files/video_title.txt', 'r') as file:
