@@ -6,31 +6,26 @@ import os, subprocess, PTN
 from modules import subtitles as subs
 
 def get_titles():
-    cmd_1 = ['find', '/mnt/HP_Vids', '-name', '*.mkv']
-    cmd_2 = ['find', '/mnt/HP_Vids', '-name', '*.avi']
-    cmd_3 = ['find', '/home/pi/Videos', '-name', '*.mkv']
-    cmd_4 = ['find', '/home/pi/Videos', '-name', '*.avi']
-    cmd_5 = ['find', '/mnt/HP_Vids', '-name', '*.mp4']
-    cmd_6 = ['find', '/home/pi/Videos', '-name', '*.mp4']
 
-    fpaths = subprocess.check_output(cmd_1, universal_newlines=True)
-    fpaths = fpaths + subprocess.check_output(cmd_2, universal_newlines=True)
-    fpaths = fpaths + subprocess.check_output(cmd_3, universal_newlines=True)
-    fpaths = fpaths + subprocess.check_output(cmd_4, universal_newlines=True)
-    fpaths = fpaths + subprocess.check_output(cmd_5, universal_newlines=True)
-    fpaths = fpaths + subprocess.check_output(cmd_6, universal_newlines=True)
+    paths = ['/mnt/HP_Vids','/home/pi/Videos']
+    extensions = ['*.mkv','*.avi','*.mp4']
+    path_str = ''
+    for path in paths:
+        for extension in extensions:
+            cmd = ['find', path, '-name', extension]
+            path_str = path_str + subprocess.check_output(cmd, universal_newlines=True)
 
-    fpaths = fpaths.replace(' ','\ ').replace('(', '\(').replace(')', '\)').split('\n')
-    fpaths.sort()
-    fpaths = list(filter(None, fpaths))
+    path_str = path_str.replace(' ','\ ').replace('(', '\(').replace(')', '\)').split('\n')
+    path_str.sort()
+    path_lst = list(filter(None, path_str))
     
-    titles = [PTN.parse(fpath.split('/')[-1]) for fpath in fpaths]
+    titles = [PTN.parse(path.split('/')[-1]) for path in path_lst]
 
     for i in range(len(titles)):
-        titles[i]['fpath'] = fpaths[i]
+        titles[i]['file_path'] = path_lst[i]
 
-    titles_zip = zip([title['fpath'] for title in titles],
-                    [(title['title'] if '/mnt/HP_Vids' in title['fpath'] else '[Pi] ' + title['title']).replace('\ ',' ').replace('\\','') \
+    titles_zip = zip([title['file_path'] for title in titles],
+                    [(title['title'] if paths[0] in title['file_path'] else '[Pi] ' + title['title']).replace('\ ',' ').replace('\\','') \
                     + (' S' + (str(0) + str(title['season']) if title['season'] < 10 else str(title['season'])) if 'season' in title else '') \
                     + ('E' + (str(0) + str(title['episode']) if title['episode'] < 10 else str(title['episode'])) if 'episode' in title else '') \
                     for title in titles])
@@ -222,7 +217,6 @@ def index():
 def restart():
     subprocess.Popen([os.path.expanduser('scripts/restart.txt')])
     return redirect('/')
-
 
 def get_resume_time(title):
     with open('files/video_title.txt', 'r') as file:
