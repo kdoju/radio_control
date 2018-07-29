@@ -13,11 +13,24 @@ def get_titles():
     for path in paths:
         for extension in extensions:
             cmd = ['find', path, '-name', extension]
-            path_str = path_str + subprocess.check_output(cmd, universal_newlines=True)
+            single_path = subprocess.check_output(cmd, universal_newlines=True)
+            path_str = path_str + single_path
 
     path_str = path_str.replace(' ','\ ').replace('(', '\(').replace(')', '\)').split('\n')
     path_str.sort()
     path_lst = list(filter(None, path_str))
+
+    min_size = 100000000
+    print '\r\n### Removing items that are smaller than ' + str(min_size) + ' bytes ###'
+    for item in path_lst:
+        size_cmd = 'ls -l '  + item + ' | cut -d " " -f5'
+        file_size = subprocess.check_output(size_cmd, universal_newlines=True, shell=True)
+        if int(file_size) < min_size:
+            path_lst.remove(item)
+            print 'Sample removed: ' + item
+    print '### Done ###\r\n'
+
+
     
     titles = [PTN.parse(path.split('/')[-1]) for path in path_lst]
 
@@ -25,11 +38,16 @@ def get_titles():
         titles[i]['file_path'] = path_lst[i]
 
     titles_zip = zip([title['file_path'] for title in titles],
-                    [(title['title'] if paths[0] in title['file_path'] else '[Pi] ' + title['title']).replace('\ ',' ').replace('\\','') \
+                    [(title['title'].title() if paths[0] in title['file_path'] else '[Pi] ' + title['title'].title()).replace('\ ',' ').replace('\\','') \
                     + (' S' + (str(0) + str(title['season']) if title['season'] < 10 else str(title['season'])) if 'season' in title else '') \
                     + ('E' + (str(0) + str(title['episode']) if title['episode'] < 10 else str(title['episode'])) if 'episode' in title else '') \
                     for title in titles])
     
+    print '\r\n### Printing ' + str(len(titles_zip)) + ' titles ###'
+    for el1, el2 in titles_zip:
+        print el2
+    print '### Done ###\r\n'
+
     return titles_zip
 
 titles_zip = get_titles()
@@ -205,7 +223,7 @@ def index():
 
         elif form.search_link.data:
             title = dict(titles_zip).get(form.titles.data).replace('[Pi] ','')
-            return redirect("http://www.google.pl/search?q=" + title)
+            return redirect("http://www.google.pl/search?q=movie " + title)
 
     if form.errors:
         for error_field, error_message in form.errors.iteritems():

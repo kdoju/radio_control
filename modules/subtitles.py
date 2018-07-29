@@ -38,7 +38,8 @@ def get_subtitles(title, path, language, sub_no):
         else:
             print "No subtitles found for file. Trying to find subtitles for title."
             match_type = 'title'
-            ia = IMDb(accessSystem='http')
+            # ia = IMDb(accessSystem='http')
+            ia = IMDb()
             if re.findall('(S[0-9]{1,2}E[0-9]{1,2})', title):
                 season = int(re.findall('(S[0-9]{2})', title)[0][1:])
                 print "season: " + str(season)
@@ -112,7 +113,7 @@ def get_subtitles(title, path, language, sub_no):
                     print resp['status']
             else:
                 message =  "Movie " + title + " not found in database."
-                print "Movie " + title + " not found in database."
+                print message
     else:
         message = resp['status']
         print resp['status']
