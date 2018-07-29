@@ -9,7 +9,7 @@ stations =  [('http://pr320.pinguinradio.com', 'PINGUIN RADIO'),
             ('http://pc192.pinguinradio.com', 'PINGUIN CLASSICS'),
             ('http://pu192.pinguinradio.com', 'PINGUIN PLUCHE')]
 
-default_volume = -2400
+default_volume = -3000
 default_volume_lvl = 5
 min_volume_lvl = 1
 max_volume_lvl = 15

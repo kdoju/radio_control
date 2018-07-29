@@ -1,5 +1,6 @@
 import subprocess
 from datetime import datetime
+from time import sleep
 
 curr_ts = datetime.now()
 prev_ts = datetime.now()
@@ -23,6 +24,7 @@ def get_song_info():
     
 while True:
     get_song_info()
+    sleep(2)
     # curr_ts = datetime.now()
     # delta = curr_ts - prev_ts
     # if delta.seconds >= 15:
