@@ -3,11 +3,13 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import SubmitField, SelectField
 import os, subprocess, PTN
-from modules import subtitles as subs
+from modules import subtitles as subs, debug
+
 
 def get_titles():
 
-    paths = ['/mnt/HP_Vids','/home/pi/Videos']
+    # paths = ['/mnt/HP_Vids','/home/pi/Videos']
+    paths = ['/home/kdoju/Videos']
     extensions = ['*.mkv','*.avi','*.mp4']
     path_str = ''
     for path in paths:
@@ -105,9 +107,19 @@ def index():
             sub_size = form.sub_size.data
             sub_switch = int(form.sub_switch.data)
             volume = get_volume_lvl()
-            sub_path = [path[:-3] + 'srt', path[:-4] + 'txt']
+            
+            # Define subtitles files
+            sub_path = [path[:-3] + 'srt', path[:-3] + 'txt']
+            # Check if subtitles exist
+            srt_exist = os.path.isfile(sub_path[0].replace('\\',''))
+            txt_exist = os.path.isfile(sub_path[1].replace('\\',''))
+            if srt_exist or txt_exist:
+                debug.print_output('Subtitle file exist')
+            else:
+                debug.print_output('Subtitle file not exist')
+            
             if sub_switch == 1 \
-            or sub_switch == 2 and (os.path.isfile(sub_path[0]) or os.path.isfile(sub_path[1])):
+            or sub_switch == 2 and not (srt_exist or txt_exist):
                 message = subs.get_subtitles(title, path, language, sub_no)
                 flash(message)
 
