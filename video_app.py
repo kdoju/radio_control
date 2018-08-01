@@ -55,7 +55,7 @@ titles_zip = get_titles()
 class MyForm(FlaskForm):
     titles = SelectField(label="Title", choices=titles_zip)
     search_link = SubmitField(label="Search")
-    sub_switch = SelectField(label="Download", choices=[('1','YES'),('0','NO')])
+    sub_switch = SelectField(label="Download subs?", choices=[('2','IF NOT EXIST'),('1','ALWAYS'),('0','NEVER')])
     language = SelectField(label="Lang", choices=[('eng','EN'),('pol','PL')])
     sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(20)], range(1,11)))
     sub_size = SelectField(label="Size", choices=zip([str(x) for x in range(40,80,5)], range(40,80,5)), default=60)
@@ -103,9 +103,11 @@ def index():
             language = form.language.data
             sub_no = int(form.sub_no.data)
             sub_size = form.sub_size.data
-            sub_switch = bool(int(form.sub_switch.data))
+            sub_switch = int(form.sub_switch.data)
             volume = get_volume_lvl()
-            if sub_switch:
+            sub_path = [path[:-3] + 'srt', path[:-4] + 'txt']
+            if sub_switch == 1 \
+            or sub_switch == 2 and (os.path.isfile(sub_path[0]) or os.path.isfile(sub_path[1])):
                 message = subs.get_subtitles(title, path, language, sub_no)
                 flash(message)
 
