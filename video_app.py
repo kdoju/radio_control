@@ -3,7 +3,8 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from wtforms import SubmitField, SelectField
 import os, subprocess, PTN
-from modules import subtitles as subs
+from modules import subtitles as subs, debug
+
 
 def get_titles():
 
@@ -55,7 +56,7 @@ titles_zip = get_titles()
 class MyForm(FlaskForm):
     titles = SelectField(label="Title", choices=titles_zip)
     search_link = SubmitField(label="Search")
-    sub_switch = SelectField(label="Download", choices=[('1','YES'),('0','NO')])
+    sub_switch = SelectField(label="Download subs?", choices=[('2','IF NOT EXIST'),('1','ALWAYS'),('0','NEVER')])
     language = SelectField(label="Lang", choices=[('eng','EN'),('pol','PL')])
     sub_no = SelectField(label="No.", choices=zip([str(x) for x in range(20)], range(1,11)))
     sub_size = SelectField(label="Size", choices=zip([str(x) for x in range(40,80,5)], range(40,80,5)), default=60)
@@ -103,9 +104,21 @@ def index():
             language = form.language.data
             sub_no = int(form.sub_no.data)
             sub_size = form.sub_size.data
-            sub_switch = bool(int(form.sub_switch.data))
+            sub_switch = int(form.sub_switch.data)
             volume = get_volume_lvl()
-            if sub_switch:
+            
+            # Define subtitles files
+            sub_path = [path[:-3] + 'srt', path[:-3] + 'txt']
+            # Check if subtitles exist
+            srt_exist = os.path.isfile(sub_path[0].replace('\\',''))
+            txt_exist = os.path.isfile(sub_path[1].replace('\\',''))
+            if srt_exist or txt_exist:
+                debug.print_output('Subtitle file exist')
+            else:
+                debug.print_output('Subtitle file not exist')
+            
+            if sub_switch == 1 \
+            or sub_switch == 2 and not (srt_exist or txt_exist):
                 message = subs.get_subtitles(title, path, language, sub_no)
                 flash(message)
 
