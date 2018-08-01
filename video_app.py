@@ -7,7 +7,8 @@ from modules import subtitles as subs
 
 def get_titles():
 
-    paths = ['/mnt/HP_Vids','/home/pi/Videos']
+#    paths = ['/mnt/HP_Vids','/home/pi/Videos']
+    paths = ['/home/kdoju/Videos']
     extensions = ['*.mkv','*.avi','*.mp4']
     path_str = ''
     for path in paths:
